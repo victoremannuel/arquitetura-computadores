@@ -13,19 +13,19 @@ def gerar_memoria(nome, idade, sexo, endereco_inicial=6):
     idade_bin = int_to_binary(idade)
     sexo_bin = string_to_binary(sexo)
 
-    # Como temos uma palavra de 64 bits, precisamos juntar os dados
-    # Supondo que a palavra de 64 bits irá armazenar até 8 caracteres por vez
-    # Portanto, o nome será dividido em várias palavras
-
-    memoria = []
-    data = nome_bin + idade_bin + sexo_bin  # Combina todos os dados em uma sequência binária
+    # Concatenar todos os dados em uma única sequência binária
+    data = nome_bin + idade_bin + sexo_bin
     total_bits = len(data)
+    
+    # Lista para armazenar as palavras de 64 bits
+    memoria = []
     
     # Preencher a memória com palavras de 64 bits
     for i in range(0, total_bits, 64):
-        memoria.append(data[i:i+64].ljust(64, '0'))  # Preencher com 0s se não preencher os 64 bits
+        palavra = data[i:i+64].ljust(64, '0')  # Preencher com 0s se não preencher os 64 bits
+        memoria.append(palavra)
 
-    # Criar a matriz de memória de acordo com a tabela fornecida
+    # Criar a matriz de memória de acordo com os endereços fornecidos
     matriz = []
     for i in range(0, len(memoria), 8):
         linha = memoria[i:i+8]
@@ -33,13 +33,15 @@ def gerar_memoria(nome, idade, sexo, endereco_inicial=6):
 
     return matriz
 
-# Função para imprimir a tabela de memória
+# Função para imprimir a tabela de memória no formato Big Endian
 def imprimir_memoria(matriz, endereco_inicial=6):
-    for i, linha in enumerate(matriz):
-        print(f"{endereco_inicial + (i * 8)};", end="")
+    endereco = endereco_inicial
+    for linha in matriz:
+        print(f"{endereco};", end="")
         for item in linha:
             print(f"{item};", end="")
         print()
+        endereco += 8  # Incrementa 8 para o próximo endereço na tabela
 
 # Dados fornecidos
 nome = "Denecley Alvim Soares"
